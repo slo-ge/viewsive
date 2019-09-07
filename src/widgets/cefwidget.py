@@ -88,6 +88,9 @@ class CefWidget(QWidget):
                 self.browser.SetBounds(self.x, self.y, size.width(), size.height())
             self.browser.NotifyMoveOrResizeStarted()
 
+        # if self.parent:
+        #    self.parent.update_label()
+
 
 class FocusHandler(object):
     def __init__(self, cef_widget):
