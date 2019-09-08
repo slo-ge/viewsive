@@ -4,6 +4,7 @@ import sys
 from PyQt5.QtWidgets import QWidget
 
 from widgets.config import WINDOWS, WindowUtils, LINUX, cef, START_URL
+from widgets.navigationbar import navigation_urlS
 
 
 class CefWidget(QWidget):
@@ -14,6 +15,7 @@ class CefWidget(QWidget):
         self.browser = None
         self.hidden_window = None  # Required for PyQt5 on Linux
         self.show()
+        self.init_subscribers()
 
     def focusInEvent(self, event):
         # This event seems to never get called on Linux, as CEF is
@@ -79,7 +81,6 @@ class CefWidget(QWidget):
             self.browser.NotifyMoveOrResizeStarted()
 
     def resizeEvent(self, event):
-        # print(self.size())
         size = event.size()
         if self.browser:
             if WINDOWS:
@@ -88,8 +89,16 @@ class CefWidget(QWidget):
                 self.browser.SetBounds(self.x, self.y, size.width(), size.height())
             self.browser.NotifyMoveOrResizeStarted()
 
-        # if self.parent:
-        #    self.parent.update_label()
+    def load_url(self):
+        if self.browser:
+            self.browser.LoadUrl(self.url.text())
+
+    def init_subscribers(self):
+        """"""
+        navigation_urlS.subscribe(self.change_url)
+
+    def change_url(self, url):
+        self.browser.LoadUrl(url)
 
 
 class FocusHandler(object):
@@ -105,7 +114,6 @@ class FocusHandler(object):
             print("[qt.py] FocusHandler.OnGotFocus:"
                   " keyboard focus fix no. 1 (Issue #284)")
             browser.SetFocus(True)
-
 
 class LoadHandler(object):
     def __init__(self, navigation_bar):

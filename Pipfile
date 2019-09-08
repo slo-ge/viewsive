@@ -9,6 +9,7 @@ verify_ssl = true
 pywin32 = "*"
 pypiwin32 = "*"
 pyqt5 = "*"
+rx = "3.0.1"
 
 [requires]
 python_version = "3.7"

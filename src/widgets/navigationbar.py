@@ -2,6 +2,9 @@ import os
 
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QFrame, QGridLayout, QLineEdit, QPushButton
+from rx.subject import Subject
+
+navigation_urlS = Subject()
 
 
 class NavigationBar(QFrame):
@@ -61,7 +64,7 @@ class NavigationBar(QFrame):
 
     def onGoUrl(self):
         if self.cef_widget.browser:
-            self.cef_widget.browser.LoadUrl(self.url.text())
+            navigation_urlS.on_next(self.url.text())
 
     def updateState(self):
         browser = self.cef_widget.browser
