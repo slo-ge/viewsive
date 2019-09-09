@@ -12,4 +12,6 @@ To make developing responsive websites more easy.
 Just see the requirements and the Pipfile. 
 
 # Pyinstall 
-* TODO
+The start.spec is my custom spec for creating an windows executable.
+For me: 
+* Just run the pyinstall with the pipenv and it should do the job

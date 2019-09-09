@@ -9,7 +9,9 @@ verify_ssl = true
 pywin32 = "*"
 pypiwin32 = "*"
 pyqt5 = "*"
-rx = "3.0.1"
+rx = "*"
+pyinstaller = "*"
+pip = "*"
 
 [requires]
 python_version = "3.7"
