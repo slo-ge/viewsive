@@ -13,21 +13,13 @@ MAC = (platform.system() == "Darwin")
 # Configuration
 WIDTH = 800
 HEIGHT = 600
-
 WindowUtils = cef.WindowUtils()
-
 START_URL = "https://phipluspi.com"
+ZOOM_FACTOR = -1.5
 
 
-# def get_browser_views(parent: QMainWindow):
-#    return [
-#        BrowserWindow('Phone', 320, parent=parent),
-#        BrowserWindow('Tablet', 568, parent=parent),
-#        BrowserWindow('Desktop', 1024, parent=parent)
-#    ]
-
-
-class ViewPortSizes(Enum):
-    MOBILE = 320
-    TABLET = 768
-    DESKTOP = 1024
+class ViewPortSize(Enum):
+    """ original viewport sizes, will automatically be zoomed by ZOOM_FACTOR"""
+    MOBILE = 280 * 1.25
+    TABLET = 560 * 1.25
+    DESKTOP = 900 * 1.25

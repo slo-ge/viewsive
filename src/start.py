@@ -3,18 +3,20 @@ import sys
 from cefpython3 import cefpython as cef
 
 from widgets.cefapplication import CefApplication
-from widgets.config import MAC
+from widgets.config import ZOOM_FACTOR
 from widgets.mainwindow import MainWindow
 
 
 def main():
+    """
+    See https://github.com/cztomczak/cefpython/blob/master/api/ApplicationSettings.md
+    for mor settings
+    """
     sys.excepthook = cef.ExceptHook  # To shutdown all CEF processes on error
-    settings = {}
-    if MAC:
-        # Issue #442 requires enabling message pump on Mac
-        # in Qt example. Calling cef.DoMessageLoopWork in a timer
-        # doesn't work anymore.
-        settings["external_message_pump"] = True
+    # see for more infos
+    settings = {
+        'auto_zooming': f'{ZOOM_FACTOR}'
+    }
 
     cef.Initialize(settings)
     app = CefApplication(sys.argv)

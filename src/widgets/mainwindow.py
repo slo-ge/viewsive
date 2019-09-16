@@ -1,8 +1,8 @@
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtWidgets import QMainWindow, QLabel, QFrame, QHBoxLayout, QVBoxLayout, QSizePolicy
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QFrame, QHBoxLayout, QVBoxLayout
 
-from widgets.cefwidget import CefWidget
-from widgets.config import WINDOWS
+from widgets.browserwidget import BrowserWindow
+from widgets.config import ViewPortSize
 from widgets.navigationbar import NavigationBar
 
 
@@ -21,9 +21,9 @@ class MainWindow(QMainWindow):
 
     def setup_layout(self):
         # self.resize(WIDTH, HEIGHT)
-        self.browser_windows.append(BrowserWindow('Phone', 320, parent=self))
-        self.browser_windows.append(BrowserWindow('Tablet', 568, parent=self))
-        self.browser_windows.append(BrowserWindow('Desktop', 1024, parent=self))
+        self.browser_windows.append(BrowserWindow('Phone', ViewPortSize.MOBILE, parent=self))
+        self.browser_windows.append(BrowserWindow('Tablet', ViewPortSize.TABLET, parent=self))
+        self.browser_windows.append(BrowserWindow('Desktop', ViewPortSize.DESKTOP, parent=self))
 
         # append just the first window
         self.navigation_bar = NavigationBar(self.browser_windows)
@@ -45,9 +45,7 @@ class MainWindow(QMainWindow):
         frame = QFrame()
         frame.setLayout(layout)
         self.setCentralWidget(frame)
-
-        if WINDOWS:
-            self.show()
+        self.show()
 
         # Browser can be embedded only after layout was set up
         # NOTE: this is important to show the browser window
@@ -65,28 +63,3 @@ class MainWindow(QMainWindow):
 
     def clear_browser_references(self):
         self.browser_windows = []
-
-
-class BrowserWindow(CefWidget):
-    def __init__(self, name,  initial_width, parent=None):
-        super(BrowserWindow, self).__init__(parent)
-        self.initial_width = initial_width
-        self.name = name
-        self.viewport_label = QLabel()
-        self._apply_widget_settings()
-
-    def _apply_widget_settings(self):
-        """ make global widget settings here """
-        self.viewport_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
-        self.viewport_label.setAlignment(Qt.AlignCenter)
-
-    def sizeHint(self):
-        return QSize(self.initial_width, 1000)
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.viewport_label.setText(self.build_viewport_label())
-
-    def build_viewport_label(self):
-        return f'{self.name}  |  Viewport: {self.size().width()} px'

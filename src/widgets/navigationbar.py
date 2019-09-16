@@ -1,15 +1,13 @@
-import os
-
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QFrame, QGridLayout, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QFrame, QGridLayout, QLineEdit
 from rx.subject import Subject
+
+from utils.qt import create_button
 
 navigation_urlS = Subject()
 
 
 class NavigationBar(QFrame):
     def __init__(self, cef_widget):
-        # noinspection PyArgumentList
         super(NavigationBar, self).__init__()
         self.cef_widget = cef_widget[0]
 
@@ -19,73 +17,57 @@ class NavigationBar(QFrame):
         layout.setSpacing(0)
 
         # Back button
-        self.back = self.createButton("back")
-        # noinspection PyUnresolvedReferences
-        self.back.clicked.connect(self.onBack)
-        # noinspection PyArgumentList
+        self.back = create_button("back")
+        self.back.clicked.connect(self.on_back)
         layout.addWidget(self.back, 0, 0)
 
         # Forward button
-        self.forward = self.createButton("forward")
-        # noinspection PyUnresolvedReferences
-        self.forward.clicked.connect(self.onForward)
-        # noinspection PyArgumentList
+        self.forward = create_button("forward")
+        self.forward.clicked.connect(self.on_forward)
         layout.addWidget(self.forward, 0, 1)
 
         # Reload button
-        self.reload = self.createButton("reload")
-        # noinspection PyUnresolvedReferences
-        self.reload.clicked.connect(self.onReload)
-        # noinspection PyArgumentList
+        self.reload = create_button("reload")
+        self.reload.clicked.connect(self.on_reload)
         layout.addWidget(self.reload, 0, 2)
 
         # Url input
         self.url = QLineEdit("")
-        # noinspection PyUnresolvedReferences
-        self.url.returnPressed.connect(self.onGoUrl)
-        # noinspection PyArgumentList
+        self.url.returnPressed.connect(self.on_go_url)
         layout.addWidget(self.url, 0, 3)
 
         # Layout
         self.setLayout(layout)
-        self.updateState()
+        self.update_state()
 
-    def onBack(self):
+    def on_back(self):
         if self.cef_widget.browser:
             self.cef_widget.browser.GoBack()
 
-    def onForward(self):
+    def on_forward(self):
         if self.cef_widget.browser:
             self.cef_widget.browser.GoForward()
 
-    def onReload(self):
+    def on_reload(self):
         if self.cef_widget.browser:
             self.cef_widget.browser.Reload()
 
-    def onGoUrl(self):
+    def on_go_url(self):
         if self.cef_widget.browser:
             navigation_urlS.on_next(self.url.text())
 
-    def updateState(self):
+    def update_state(self):
         browser = self.cef_widget.browser
+
         if not browser:
             self.back.setEnabled(False)
             self.forward.setEnabled(False)
             self.reload.setEnabled(False)
             self.url.setEnabled(False)
             return
+
         self.back.setEnabled(browser.CanGoBack())
         self.forward.setEnabled(browser.CanGoForward())
         self.reload.setEnabled(True)
         self.url.setEnabled(True)
         self.url.setText(browser.GetUrl())
-
-    def createButton(self, name):
-        resources = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                                 "resources")
-        pixmap = QPixmap(os.path.join(resources, "{0}.png".format(name)))
-        icon = QIcon(pixmap)
-        button = QPushButton()
-        button.setIcon(icon)
-        button.setIconSize(pixmap.rect().size())
-        return button
