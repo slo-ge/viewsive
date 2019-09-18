@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QFrame, QHBoxLayout, QVBoxLayout
 
 from widgets.browserwidget import BrowserWindow
-from widgets.config import ViewPortSize
+from widgets.config import ViewPortSize, app_state
 from widgets.navigationbar import NavigationBar
 
 
@@ -51,6 +51,8 @@ class MainWindow(QMainWindow):
         # NOTE: this is important to show the browser window
         for browser_window in self.browser_windows:
             browser_window.embedBrowser()
+
+            app_state.append_browser(browser_window.browser)
 
     def closeEvent(self, event):
         # Close browser (force=True) and free CEF reference

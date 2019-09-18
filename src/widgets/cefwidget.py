@@ -1,8 +1,9 @@
 import ctypes
 
 from PyQt5.QtWidgets import QWidget
+from cefpython3.cefpython_py37 import PyBrowser
 
-from widgets.config import WindowUtils, cef, START_URL
+from widgets.config import WindowUtils, cef, START_URL, app_state
 from widgets.navigationbar import navigation_urlS
 
 
@@ -11,7 +12,7 @@ class CefWidget(QWidget):
         # noinspection PyArgumentList
         super(CefWidget, self).__init__(parent)
         self.parent = parent
-        self.browser = None
+        self.browser: PyBrowser = None
         self.hidden_window = None  # Required for PyQt5 on Linux
         self.show()
         self.init_subscribers()
@@ -86,6 +87,7 @@ class LoadHandler(object):
         self.navigation_bar = navigation_bar
 
     def OnLoadingStateChange(self, **_):
+        # app_state.update_url(_['browser'].GetUrl())
         self.navigation_bar.update_state()
 
     def OnLoadStart(self, browser, **_):

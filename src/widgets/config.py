@@ -2,6 +2,8 @@ from enum import Enum
 
 from cefpython3 import cefpython
 
+from utils.appstore import AppState
+
 cef = cefpython
 
 # Configuration
@@ -11,6 +13,10 @@ WindowUtils = cef.WindowUtils()
 START_URL = "https://phipluspi.com"
 ZOOM_FACTOR = -1.5
 
+# Syncs browser urls over different windows
+BROWSER_SYNCHRONIZATION = True
+
+app_state = AppState()
 
 class ViewPortSize(Enum):
     """ original viewport sizes, will automatically be zoomed by ZOOM_FACTOR"""
