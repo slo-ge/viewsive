@@ -1,15 +1,13 @@
 from PyQt5.QtWidgets import QFrame, QGridLayout, QLineEdit
-from rx.subject import Subject
 
 from utils.qt import create_button
-
-navigation_urlS = Subject()
+from widgets.config import START_URL, app_state
 
 
 class NavigationBar(QFrame):
-    def __init__(self, cef_widget):
+    def __init__(self):
         super(NavigationBar, self).__init__()
-        self.cef_widget = cef_widget[0]
+        # self.cef_widget = cef_widget[0]
 
         # Init layout
         layout = QGridLayout()
@@ -39,35 +37,45 @@ class NavigationBar(QFrame):
         # Layout
         self.setLayout(layout)
         self.update_state()
+        self.init_config()
+
+    def init_config(self):
+        self.url.setText(START_URL)
 
     def on_back(self):
-        if self.cef_widget.browser:
-            self.cef_widget.browser.GoBack()
+        pass
+        # if self.cef_widget.browser:
+        #    self.cef_widget.browser.GoBack()
 
     def on_forward(self):
-        if self.cef_widget.browser:
-            self.cef_widget.browser.GoForward()
+        pass
+        # if self.cef_widget.browser:
+        #    self.cef_widget.browser.GoForward()
 
     def on_reload(self):
-        if self.cef_widget.browser:
-            self.cef_widget.browser.Reload()
+        pass
+        # if self.cef_widget.browser:
+        #    self.cef_widget.browser.Reload()
 
     def on_go_url(self):
-        if self.cef_widget.browser:
-            navigation_urlS.on_next(self.url.text())
+        # just push the next url into navigation state
+        app_state.next_navigation_url(self.url.text())
 
     def update_state(self):
-        browser = self.cef_widget.browser
+        # browser = self.cef_widget.browser
 
-        if not browser:
-            self.back.setEnabled(False)
-            self.forward.setEnabled(False)
-            self.reload.setEnabled(False)
-            self.url.setEnabled(False)
-            return
+        # if not browser:
+        #    self.back.setEnabled(False)
+        #    self.forward.setEnabled(False)
+        #    self.reload.setEnabled(False)
+        #    self.url.setEnabled(False)
+        #    return
 
-        self.back.setEnabled(browser.CanGoBack())
-        self.forward.setEnabled(browser.CanGoForward())
+        # TODO
+        # self.back.setEnabled(browser.CanGoBack())
+        # self.forward.setEnabled(browser.CanGoForward())
         self.reload.setEnabled(True)
         self.url.setEnabled(True)
-        self.url.setText(browser.GetUrl())
+
+        # TODO: set text of textbox
+        # self.url.setText(browser.GetUrl())

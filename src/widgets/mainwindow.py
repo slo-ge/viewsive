@@ -13,8 +13,6 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(None)
         # Avoids crash when shutting down CEF (issue #360)
         self.browser_windows: [BrowserWindow] = []
-
-        self.navigation_bar = None
         self.setWindowTitle("PyQt5 example")
         self.setFocusPolicy(Qt.StrongFocus)
         self.setup_layout()
@@ -25,11 +23,10 @@ class MainWindow(QMainWindow):
         self.browser_windows.append(BrowserWindow('Tablet', ViewPortSize.TABLET, parent=self))
         self.browser_windows.append(BrowserWindow('Desktop', ViewPortSize.DESKTOP, parent=self))
 
-        # append just the first window
-        self.navigation_bar = NavigationBar(self.browser_windows)
+        navigation_bar = NavigationBar()
 
         layout = QVBoxLayout()
-        layout.addWidget(self.navigation_bar)
+        layout.addWidget(navigation_bar)
         hbox = QHBoxLayout()
 
         browser_window: BrowserWindow
@@ -53,6 +50,7 @@ class MainWindow(QMainWindow):
             browser_window.embedBrowser()
 
             app_state.append_browser(browser_window.browser)
+        app_state.append_navigation(navigation_bar)
 
     def closeEvent(self, event):
         # Close browser (force=True) and free CEF reference
