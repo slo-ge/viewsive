@@ -1,7 +1,7 @@
 import ctypes
 
 from PyQt5.QtWidgets import QWidget
-from cefpython3.cefpython_py37 import PyBrowser
+from cefpython3.cefpython_py37 import PyBrowser, PyFrame
 
 from widgets.config import WindowUtils, cef, START_URL, app_state
 
@@ -33,6 +33,7 @@ class CefWidget(QWidget):
         self.browser = cef.CreateBrowserSync(window_info, url=START_URL)
         self.browser.SetClientHandler(LoadHandler())
         self.browser.SetClientHandler(FocusHandler(self))
+        # print(frame.ViewSource())
 
     def getHandle(self):
         try:
@@ -88,6 +89,19 @@ class LoadHandler(object):
         print('on loading state change')
         # app_state.update_url(_['browser'].GetUrl())
         # self.navigation_bar.update_state()
+
+        frame = _['browser'].GetMainFrame()  # type: PyFrame
+        # TODO: listen to scroll top event
+        frame.ExecuteJavascript("""
+        function test() {
+          alert("function");
+          window.onscroll = function(event) {
+             console.log(document.documentElement.scrollTop);
+          };
+        }
+
+        """)
+        frame.ExecuteFunction('test')
 
     def OnLoadStart(self, browser, **_):
         if not self.initial_app_loading:

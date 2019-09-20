@@ -20,8 +20,8 @@ class MainWindow(QMainWindow):
     def setup_layout(self):
         # self.resize(WIDTH, HEIGHT)
         self.browser_windows.append(BrowserWindow('Phone', ViewPortSize.MOBILE, parent=self))
-        self.browser_windows.append(BrowserWindow('Tablet', ViewPortSize.TABLET, parent=self))
-        self.browser_windows.append(BrowserWindow('Desktop', ViewPortSize.DESKTOP, parent=self))
+        #self.browser_windows.append(BrowserWindow('Tablet', ViewPortSize.TABLET, parent=self))
+        #self.browser_windows.append(BrowserWindow('Desktop', ViewPortSize.DESKTOP, parent=self))
 
         navigation_bar = NavigationBar()
 

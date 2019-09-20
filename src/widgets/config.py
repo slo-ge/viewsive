@@ -10,7 +10,7 @@ cef = cefpython
 WIDTH = 800
 HEIGHT = 600
 WindowUtils = cef.WindowUtils()
-START_URL = "https://phipluspi.com"
+START_URL = "https://phipluspi.com/project"
 ZOOM_FACTOR = -1.5
 
 # Syncs browser urls over different windows
