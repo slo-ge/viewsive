@@ -27,12 +27,23 @@ class CefWidget(QWidget):
             self.browser.SetFocus(False)
 
     def embedBrowser(self):
+        def get_coordinates(coordinates: float):
+            """ receive coordinates from browser
+            
+            :param coordinates: 
+            :return: 
+            """
+            print("Value sent from Javascript: " + str(coordinates))
+
         window_info = cef.WindowInfo()
         rect = [0, 0, self.width(), self.height()]
         window_info.SetAsChild(self.getHandle(), rect)
         self.browser = cef.CreateBrowserSync(window_info, url=START_URL)
         self.browser.SetClientHandler(LoadHandler())
         self.browser.SetClientHandler(FocusHandler(self))
+        bindings = cef.JavascriptBindings()
+        bindings.SetFunction("py_get_coordinates", get_coordinates)
+        self.browser.SetJavascriptBindings(bindings)
         # print(frame.ViewSource())
 
     def getHandle(self):
@@ -93,13 +104,14 @@ class LoadHandler(object):
         frame = _['browser'].GetMainFrame()  # type: PyFrame
         # TODO: listen to scroll top event
         frame.ExecuteJavascript("""
+        
         function test() {
-          alert("function");
           window.onscroll = function(event) {
              console.log(document.documentElement.scrollTop);
+             py_get_coordinates(document.documentElement.scrollTop);
           };
         }
-
+        
         """)
         frame.ExecuteFunction('test')
 
