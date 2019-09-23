@@ -13,7 +13,6 @@ class CefWidget(QWidget):
         self.browser: PyBrowser = None
         self.hidden_window = None  # Required for PyQt5 on Linux
         self.show()
-        self.init_subscribers()
 
     def focusInEvent(self, event):
         if self.browser:
@@ -27,24 +26,12 @@ class CefWidget(QWidget):
             self.browser.SetFocus(False)
 
     def embedBrowser(self):
-        def get_coordinates(coordinates: float):
-            """ receive coordinates from browser
-            
-            :param coordinates: 
-            :return: 
-            """
-            print("Value sent from Javascript: " + str(coordinates))
-
         window_info = cef.WindowInfo()
         rect = [0, 0, self.width(), self.height()]
         window_info.SetAsChild(self.getHandle(), rect)
         self.browser = cef.CreateBrowserSync(window_info, url=START_URL)
         self.browser.SetClientHandler(LoadHandler())
         self.browser.SetClientHandler(FocusHandler(self))
-        bindings = cef.JavascriptBindings()
-        bindings.SetFunction("py_get_coordinates", get_coordinates)
-        self.browser.SetJavascriptBindings(bindings)
-        # print(frame.ViewSource())
 
     def getHandle(self):
         try:
@@ -71,13 +58,6 @@ class CefWidget(QWidget):
     def load_url(self):
         if self.browser:
             self.browser.LoadUrl(self.url.text())
-
-    def init_subscribers(self):
-        """"""
-        app_state.get_navigation_url_subscription().subscribe(self.change_url)
-
-    def change_url(self, url):
-        self.browser.LoadUrl(url)
 
 
 class FocusHandler(object):
