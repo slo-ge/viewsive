@@ -8,6 +8,8 @@ class AppState(object):
     def __init__(self):
         self._browser_holder: [PyBrowser] = []
         self._navigation_urlS: typing.Subject = Subject()
+        self._update_y_position: typing.Subject = Subject()
+
         self._navigation_bar = None
 
     def append_browser(self, browser: PyBrowser):
@@ -34,3 +36,8 @@ class AppState(object):
 
     def get_navigation_url_subscription(self) -> typing.Subject:
         return self._navigation_urlS
+
+    def sync_browser_scroll(self, value):
+        print('update scrolling of browser')
+        for browser in self._browser_holder:
+            browser.ExecuteFunction('py_scrollTo', value)

@@ -41,18 +41,6 @@ class BrowserWindow(CefWidget):
 
     def embedBrowser(self):
         super(BrowserWindow, self).embedBrowser()
-        bindings = cef.JavascriptBindings()
-        bindings.SetFunction("py_get_coordinates", self.coordinates_js)
-        self.browser.SetJavascriptBindings(bindings)
 
     def change_url(self, url):
         self.browser.LoadUrl(url)
-
-    def coordinates_js(self, coordinates: float):
-        """ receive coordinates from javascript method
-
-        :param coordinates:
-        :return:
-        """
-        self.scroll_top_position = int(coordinates)
-        print("Value sent from Javascript: " + str(coordinates))

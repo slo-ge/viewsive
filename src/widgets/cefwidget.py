@@ -33,6 +33,13 @@ class CefWidget(QWidget):
         self.browser.SetClientHandler(LoadHandler())
         self.browser.SetClientHandler(FocusHandler(self))
 
+        self.javascript_bindings()
+
+    def javascript_bindings(self):
+        bindings = cef.JavascriptBindings()
+        bindings.SetFunction("py_get_coordinates", self.coordinates_js)
+        self.browser.SetJavascriptBindings(bindings)
+
     def getHandle(self):
         try:
             # PyQt4 and PyQt5
@@ -42,6 +49,15 @@ class CefWidget(QWidget):
             ctypes.pythonapi.PyCapsule_GetPointer.restype = ctypes.c_void_p
             ctypes.pythonapi.PyCapsule_GetPointer.argtypes = [ctypes.py_object]
             return ctypes.pythonapi.PyCapsule_GetPointer(self.winId(), None)
+
+    def coordinates_js(self, coordinates: float):
+        """ receive coordinates from javascript method
+
+        :param coordinates:
+        :return:
+        """
+        self.scroll_top_position = int(coordinates)
+        app_state.sync_browser_scroll(self.scroll_top_position)
 
     def moveEvent(self, _):
         self.x = 0
@@ -76,20 +92,25 @@ class LoadHandler(object):
         self.initial_app_loading = True
 
     def OnLoadingStateChange(self, **_):
-        # TODO: call update navbar widget, but now in state managment
-        print('on loading state change')
-        # app_state.update_url(_['browser'].GetUrl())
-        # self.navigation_bar.update_state()
-
         frame = _['browser'].GetMainFrame()  # type: PyFrame
-        # TODO: listen to scroll top event
         frame.ExecuteJavascript("""
+        
+        var triggerEvent = true; 
         
         function test() {
           window.onscroll = function(event) {
              console.log(document.documentElement.scrollTop);
-             py_get_coordinates(document.documentElement.scrollTop);
+             if (triggerEvent) {
+                py_get_coordinates(document.documentElement.scrollTop);
+             }
           };
+        }
+        
+        function py_scrollTo(position) {
+            window.scroll(0, position); 
+            triggerEvent = false; 
+            setTimeout(() => { triggerEvent=true; }, 500);
+            
         }
         
         """)
@@ -98,10 +119,4 @@ class LoadHandler(object):
     def OnLoadStart(self, browser, **_):
         if not self.initial_app_loading:
             app_state.update_url(browser.GetUrl())
-
         self.initial_app_loading = False
-
-        # TODO: we just set the focus
-        # if self.initial_app_loading:
-        #    self.navigation_bar.cef_widget.setFocus()
-        #    self.initial_app_loading = False
