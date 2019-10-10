@@ -3,7 +3,7 @@ import ctypes
 from PyQt5.QtWidgets import QWidget
 from cefpython3.cefpython_py37 import PyBrowser, PyFrame
 
-from widgets.config import WindowUtils, cef, START_URL, app_state
+from widgets.config import WindowUtils, cef, START_URL, app_state, parser
 
 
 class CefWidget(QWidget):
@@ -37,7 +37,10 @@ class CefWidget(QWidget):
 
     def javascript_bindings(self):
         bindings = cef.JavascriptBindings()
-        bindings.SetFunction("py_get_coordinates", self.coordinates_js)
+        bindings.SetFunction(
+            parser.lookup("py_get_coordinates"),
+            self.coordinates_js
+        )
         self.browser.SetJavascriptBindings(bindings)
 
     def getHandle(self):
@@ -56,8 +59,7 @@ class CefWidget(QWidget):
         :param coordinates:
         :return:
         """
-        self.scroll_top_position = int(coordinates)
-        app_state.sync_browser_scroll(self.scroll_top_position)
+        app_state.sync_browser_scroll(int(coordinates))
 
     def moveEvent(self, _):
         self.x = 0
@@ -93,28 +95,8 @@ class LoadHandler(object):
 
     def OnLoadingStateChange(self, **_):
         frame = _['browser'].GetMainFrame()  # type: PyFrame
-        frame.ExecuteJavascript("""
-        
-        var triggerEvent = true; 
-        
-        function test() {
-          window.onscroll = function(event) {
-             console.log(document.documentElement.scrollTop);
-             if (triggerEvent) {
-                py_get_coordinates(document.documentElement.scrollTop);
-             }
-          };
-        }
-        
-        function py_scrollTo(position) {
-            window.scroll(0, position); 
-            triggerEvent = false; 
-            setTimeout(() => { triggerEvent=true; }, 500);
-            
-        }
-        
-        """)
-        frame.ExecuteFunction('test')
+        frame.ExecuteJavascript(parser.source)
+        frame.ExecuteFunction(parser.js_init)
 
     def OnLoadStart(self, browser, **_):
         if not self.initial_app_loading:

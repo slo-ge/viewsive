@@ -14,7 +14,6 @@ class BrowserWindow(CefWidget):
         self.viewport_label = QLabel()
         self._apply_widget_settings()
         self.init_subscribers()
-        self.scroll_top_position: int = 0
 
     def init_subscribers(self):
         """"""
