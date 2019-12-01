@@ -3,13 +3,14 @@ import ctypes
 from PyQt5.QtWidgets import QWidget
 from cefpython3.cefpython_py37 import PyBrowser, PyFrame
 
-from widgets.config import WindowUtils, cef, START_URL, app_state, parser
+from widgets.config import WindowUtils, cef, FALLBACK_URL, app_state, parser
 
 
 class CefWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, url=None):
         # noinspection PyArgumentList
         super(CefWidget, self).__init__(parent)
+        self.url = url
         self.browser: PyBrowser = None
         self.hidden_window = None  # Required for PyQt5 on Linux
         self.show()
@@ -29,7 +30,7 @@ class CefWidget(QWidget):
         window_info = cef.WindowInfo()
         rect = [0, 0, self.width(), self.height()]
         window_info.SetAsChild(self.getHandle(), rect)
-        self.browser = cef.CreateBrowserSync(window_info, url=START_URL)
+        self.browser = cef.CreateBrowserSync(window_info, url=self.url or FALLBACK_URL)
         self.browser.SetClientHandler(LoadHandler())
         self.browser.SetClientHandler(FocusHandler(self))
 
@@ -100,5 +101,7 @@ class LoadHandler(object):
 
     def OnLoadStart(self, browser, **_):
         if not self.initial_app_loading:
-            app_state.update_url(browser.GetUrl())
+            # TODO: url sync is not active
+            print('url sync is not active')
+            # app_state.update_url(browser.GetUrl())
         self.initial_app_loading = False

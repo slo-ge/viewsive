@@ -1,0 +1,12 @@
+profile-1:
+  view_mode: tab
+  tabs:
+    - name: localhost
+      url: http://www.google.at
+      width: 1024
+    - name: localhost11
+      url: http://localhost:4200
+      width: 1024
+    - name: localhost11!
+      url: http://localhost:4200
+      width: 1024

@@ -1,8 +1,9 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QFrame, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QFrame, QHBoxLayout, QVBoxLayout, QTabWidget
 
+from utils.config_parser import load_config
 from widgets.browserwidget import BrowserWindow
-from widgets.config import ViewPortSize, app_state
+from widgets.config import app_state, config_file
 from widgets.navigationbar import NavigationBar
 
 
@@ -12,19 +13,29 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__(None)
         # Avoids crash when shutting down CEF (issue #360)
-        self.browser_windows: [BrowserWindow] = []
+
         self.setWindowTitle("PyQt5 example")
         self.setFocusPolicy(Qt.StrongFocus)
-        self.setup_layout()
 
-    def setup_layout(self):
-        # self.resize(WIDTH, HEIGHT)
-        self.browser_windows.append(BrowserWindow('Phone', ViewPortSize.MOBILE, parent=self))
-        self.browser_windows.append(BrowserWindow('Tablet', ViewPortSize.MOBILE, parent=self))
-        self.browser_windows.append(BrowserWindow('Desktop', ViewPortSize.DESKTOP, parent=self))
+        self.browser_windows: [BrowserWindow] = []
+        # self.setup_default_layout()
+        self.setup_tab_layout()
 
+    def setup_tab_layout(self):
+        tabs = QTabWidget()
+        for tab in load_config(config_file).tabs:
+            window = BrowserWindow(tab.name, tab.width, tab.url, parent=self)
+            self.embed_view(window)
+            window.setFixedSize(window.sizeHint())
+            window.setFixedSize(window.sizeHint())
+            tabs.addTab(window, tab.name)
+
+        self.setCentralWidget(tabs)
+        self.show()
+
+    def setup_default_layout(self):
+        # TODO: embed_view to render browser
         navigation_bar = NavigationBar()
-
         layout = QVBoxLayout()
         layout.addWidget(navigation_bar)
         hbox = QHBoxLayout()
@@ -37,20 +48,15 @@ class MainWindow(QMainWindow):
             hbox.addLayout(vbox)
 
         layout.addLayout(hbox)
-
-        # append main window layout
         frame = QFrame()
         frame.setLayout(layout)
         self.setCentralWidget(frame)
         self.show()
-
-        # Browser can be embedded only after layout was set up
-        # NOTE: this is important to show the browser window
-        for browser_window in self.browser_windows:
-            browser_window.embedBrowser()
-
-            app_state.append_browser(browser_window.browser)
         app_state.append_navigation(navigation_bar)
+
+    def embed_view(self, window):
+        window.embedBrowser()
+        app_state.append_browser(window.browser)
 
     def closeEvent(self, event):
         # Close browser (force=True) and free CEF reference

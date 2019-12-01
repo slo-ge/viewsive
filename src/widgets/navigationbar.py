@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QFrame, QGridLayout, QLineEdit
 
 from utils.qt import create_button
-from widgets.config import START_URL, app_state
+from widgets.config import FALLBACK_URL, app_state
 
 
 class NavigationBar(QFrame):
@@ -40,7 +40,7 @@ class NavigationBar(QFrame):
         self.init_config()
 
     def init_config(self):
-        self.url.setText(START_URL)
+        self.url.setText(FALLBACK_URL)
 
     def on_back(self):
         pass

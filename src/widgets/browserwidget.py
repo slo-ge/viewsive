@@ -2,14 +2,14 @@ from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QLabel, QSizePolicy
 
 from widgets.cefwidget import CefWidget
-from widgets.config import ZOOM_FACTOR, ViewPortSize, cef, app_state
+from widgets.config import ZOOM_FACTOR, app_state
 
 
 class BrowserWindow(CefWidget):
-    def __init__(self, name, initial_width: ViewPortSize, parent=None):
-        super(BrowserWindow, self).__init__(parent)
+    def __init__(self, name, initial_width: int, url, parent=None):
+        super(BrowserWindow, self).__init__(parent, url)
 
-        self.initial_width = initial_width.value  # unpack dict value
+        self.initial_width = initial_width
         self.name = name
         self.viewport_label = QLabel()
         self._apply_widget_settings()

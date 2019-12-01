@@ -1,4 +1,5 @@
 from enum import Enum
+from pathlib import Path
 
 from cefpython3 import cefpython
 
@@ -11,7 +12,7 @@ cef = cefpython
 WIDTH = 800
 HEIGHT = 600
 WindowUtils = cef.WindowUtils()
-START_URL = "https://phipluspi.com/project"
+FALLBACK_URL = "https://phipluspi.com/project"
 ZOOM_FACTOR = -1.5
 
 # Syncs browser urls over different windows
@@ -19,14 +20,9 @@ BROWSER_SYNCHRONIZATION = True
 
 app_state = AppState()
 
-from pathlib import Path
 data_folder = Path("src/utils")
 file_to_open = data_folder / "utils.js"
 parser = JavaScriptBindingParser()
 javascript = parser.from_file(file_to_open)
 
-class ViewPortSize(Enum):
-    """ original viewport sizes, will automatically be zoomed by ZOOM_FACTOR"""
-    MOBILE = 280 * 1.25
-    TABLET = 560 * 1.25
-    DESKTOP = 900 * 1.25
+config_file = data_folder / "config.yaml"  # yaml config
