@@ -30,7 +30,7 @@ class BrowserWindow(CefWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.viewport_label.setText(self.build_viewport_label())
+        # self.viewport_label.setText(self.build_viewport_label())
 
     def build_viewport_label(self):
         return (
