@@ -9,3 +9,4 @@ webrtc_event_logs
 error.log
 build/
 dist/
+/utils/config.yaml

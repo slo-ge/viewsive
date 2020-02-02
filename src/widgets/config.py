@@ -13,7 +13,7 @@ WIDTH = 800
 HEIGHT = 600
 WindowUtils = cef.WindowUtils()
 FALLBACK_URL = "https://phipluspi.com/project"
-ZOOM_FACTOR = -1.5
+ZOOM_FACTOR = 0
 
 # Syncs browser urls over different windows
 BROWSER_SYNCHRONIZATION = True

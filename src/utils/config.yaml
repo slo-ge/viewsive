@@ -1,12 +1,20 @@
-profile-1:
-  view_mode: tab
-  tabs:
-    - name: localhost
-      url: http://www.google.at
-      width: 1024
-    - name: localhost11
-      url: http://localhost:4200
-      width: 1024
-    - name: localhost11!
-      url: http://localhost:4200
-      width: 1024
+profiles:
+  - profile: Desktop Views
+    view_mode: tab
+    tabs:
+      - name: projects
+        url: https://www.phipluspi.com/project/
+        width: 1440
+      - name: goove
+        url: https://www.goove.at/
+        width: 1440
+
+  - profile: Mobile Views
+    view_mode: tab
+    tabs:
+      - name: projects
+        url: https://www.phipluspi.com/project/
+        width: 768
+      - name: goove
+        url: https://www.goove.at/
+        width: 768

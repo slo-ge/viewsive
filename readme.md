@@ -16,3 +16,30 @@ The start.spec is my custom spec for creating aa windows executable.
 I think, it will just work on my machine 
 For me: 
 * Just run the pyinstall with the pipenv and it should do the job
+
+
+## Config File for different views
+```yml
+
+profiles:
+  - profile: Desktop Views
+    view_mode: tab
+    tabs:
+      - name: projects
+        url: https://www.phipluspi.com/project/
+        width: 1440
+      - name: goove
+        url: https://www.goove.at/
+        width: 1440
+
+  - profile: Mobile Views
+    view_mode: tab
+    tabs:
+      - name: projects
+        url: https://www.phipluspi.com/project/
+        width: 768
+      - name: goove
+        url: https://www.goove.at/
+        width: 768
+ ```
+        

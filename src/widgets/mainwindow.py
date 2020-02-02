@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
             self.embed_view(window)
             window.setFixedSize(window.sizeHint())
             window.setFixedSize(window.sizeHint())
-            self.tabs.addTab(window, tab.name)
+            self.tabs.addTab(window, f'{tab.name}  {tab.width}px')
 
     def setup_default_layout(self):
         # TODO: embed_view to render browser
